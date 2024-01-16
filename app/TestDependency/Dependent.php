@@ -4,7 +4,7 @@ namespace App\TestDependency;
 
 class Dependent
 {
-    private Dependency $dependency;
+    public Dependency $dependency;
 
     public function __construct(Dependency $dependency)
     {

@@ -122,3 +122,26 @@
     to get dependency instance, automatically bind function is called
     , but same like make function, bind function will called each time make
     function is called, so instance isn't same
+    Notes: function like bind(key, closure) and make(key) function isn't
+    limited in dependencies instance maker, but you can make all class
+    instance that available in you laravel
+
+11. Singleton method: if before in Application class that instantiate in
+    $app variable and have function like bind(key, closure) that return
+    instance from our class, but instance always new, so laravel have
+    function that return same object even if you called make(key) function
+    again and again, this function is singleton(key, closure) function
+
+12. instance method: if before in Application class that instantiate in
+    $app variable and have function like singleton(key, closure) return
+    instance from our class, but instance always same, different with that
+    instance(key, object) function haven't required closure, but you can
+    pass object in parameter. Functionality this function is same like
+    singleton(key, closure) function and when you call make(key) function
+    again and again, instance that returned is the same object
+
+Notes for bind(key, closure), singleton(key, closure) , and instance(key,
+    object) function: if you call make(key) function with key is dependent
+    class, laravel with ServiceContainer will automatically search
+    dependency class that available and pass the requirements for our
+    dependent
