@@ -77,6 +77,48 @@
     Note: if you make some file in config folder, try to make file name
     with lowercase
 
-    9.A configuration cache: sometimes we had crated to many config files
+    configuration cache: sometimes we had crated to many config files
     that result in laravel must read all that when we get config, in
-    development this seems
+    development this seems not big problem, but if our program enter
+    production stage, this will make our program became slow, so in laravel
+    there is feature for caching our configuration that make our
+    configuration became one file, so laravel read process will become much
+    faster, because data will be loaded when application is started
+    In order to make configuration cache you can type artisan command:
+    "php artisan config:cache", but you must do this when production
+    deployment process, because when you application's in development stage
+    configuration will frequently be changed and once configuration has
+    been cached, your application's config that new added will not be used
+    and your .env file will not be loaded by the framework during request
+    or artisan command and env functions just
+    return external system level environment variables and sometimes
+    env() function will not work, so for this reason you should called env
+    value from config() function by configuration
+    file, or you can purged your cached configuration by artisan command
+    "php artisan config:clear"
+
+10. Dependencies injection: is some technic that object can receive other
+    object or dependency, so those object that receive other object require
+    that object to be functional, this make object depend on other object
+    which sometimes not good enough, but if your program must require that
+    , more recommended if your dependency injection or process insert
+    foreign object is from constructor. In laravel we haven't made
+    dependency injection manually, because in laravel there is feature that
+    can make, maintain, and manage dependency injection in automatically
+    way, this feature is Service Container, that represented in Application
+    class, but we haven't made instance manually from that class, because
+    if you look on public/index.php file, there is $app object that
+    defined instance our Application class, so you can use that instance
+    to access methods like service container and other services. In
+    service container specifically, you haven't made dependency instance
+    that use by dependent with 'new' key again, but accessed by
+    $classInstance = $app->make(className::class), some notes that if you
+    make dependency instance from those way, each class instance you make
+    always new and not same object again, also make function in Application
+    class cannot process complex class like constructor from dependency
+    require parameter, so you can use bind(key, closure) function, in this
+    function you can just return array inside closure with value is
+    argument that needed for constructor, so when you call make function
+    to get dependency instance, automatically bind function is called
+    , but same like make function, bind function will called each time make
+    function is called, so instance isn't same
