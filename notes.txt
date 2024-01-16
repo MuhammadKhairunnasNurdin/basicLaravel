@@ -1,0 +1,82 @@
+1. laravel using MVC paradigm
+
+2. public/index.php is entry point for our program:
+    in index we execute: laravel, composer, bootstrap, kernel, and request
+
+3. kernel in laravel have 2 kernel:
+    a. HTTP kernel serve HTTP or web request, first request accepted in
+    public/index.php and continue to Kernel class in app/Http folder.
+    Bootstrapping in kernel is a Core logic process so that we can receive
+    request from Web and handling that request, so we can respond, but this
+    just load service provider class in app/providers folder
+    b. Console kernel to serve console request.
+
+4. Service provider that do bootstrapping for all component in laravel like:
+    database, queue, validation, routing, etc. This process is like
+    init.php in our first program in "Project_Tatib" third semester IT
+    Polinema. There is a Class in app/Providers that important for basic,
+    that is RouteServiceProvides, this class handling routing from our URL
+    like what controller and method that we execute for some feature in web
+
+5. this some request cycle: Request->public/index.php->Kernel(if HTTP
+    request accepted in HTTP kernel usually for web application, and if
+    console request or console application accepted in app/console/Kernel
+    .php or console kernel)->Service_Provider(do multiple bootstrapping for
+    all component)->if Routing we use RouteServiceProviders
+    Class->app/routes folder for more specific routing
+
+6. in laravel there are 2 Testing method:
+    a.Unit test: unit testing is test that focus on testing small unit like
+    function, method, class, and other component. This test is made to our
+    unit code is running in isolation environment without dependency to
+    other unit or outside environment. use PHPUnit\Framework\TestCase
+    and this test much faster than integration because we
+    haven't loaded our laravel. You can use artisan command to make Unit
+    Test: "php artisan make:test NameUnitTest --unit".
+    b. integration test: test that focus in interaction between unit in some
+    big accumulation unit, like interaction view, controller and model
+    use Illuminate\Foundation\Testing\TestCase to make integration test.
+    This test is much easy to access our laravel component like Database,
+    Controller, and other compare to Unit Test also if you use laravel
+    feature u must use integration test. To make integration test u can use
+    artisan command: "php artisan make:test NameIntegrationTest".
+    If you want to run all test
+    you can use artisan command: "php artisan test"
+    Notes: in function name in our testing class must prefix with test
+
+7. environment setting in laravel much easier with help .env file in our
+    project, you can add, edit, and delete manually in there without setting
+    environment variable manually in our system.Laravel in function env()
+    or you can use Env::get() have default value if our env var hadn't
+    existed, here some example:
+    env(key, default) => env("THIS_KEY", "DEFAULT")
+
+8. Application environment: sometimes we want to set our application
+    running in which environment like: local, development, staging, Qa or
+    Production, so in laravel you can change that by edit APP_ENV in .env.
+    Note: if you make UnitTest or Integration Test, and want to check your
+    application environment, laravel will override your APP_ENV to "testing"
+    in file phpunit.xml, this is code: <env name="APP_ENV" value="testing"/>
+    If you want to know which app env you code running you can use function
+    "App::environment() or App::environment([value1, value2]
+    (this for multiple value check)"; so you haven't used function
+    env("APP_ENV") to check that
+
+9. Configuration: Environment variable in .env used for configuration that
+    always change or frequent to change and integrate in environment
+    variable in OS; but laravel also support configuration setting with
+    PHP code, this configuration usually used when configuration haven't
+    frequently change and this usually same with other app location when
+    running, this type configuration is saved in config folder in laravel
+    and prefix for this configuration start with name php file within there
+    To make config file, you can make file .php in config folder and inside
+    that you can return associative array and to receive configuration, you
+    can use function => config(key, default)
+    with key is "prefix(or nameFile).arrayKey(if nested array you can use .
+    like: example.author.first)"
+    Note: if you make some file in config folder, try to make file name
+    with lowercase
+
+    9.A configuration cache: sometimes we had crated to many config files
+    that result in laravel must read all that when we get config, in
+    development this seems
