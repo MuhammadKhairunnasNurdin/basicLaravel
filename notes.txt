@@ -246,4 +246,22 @@ Notes for bind(key, closure), singleton(key, closure) , and instance(key,
      framework, it will automatically check for these properties and
      register their bindings
 
-     D.
+     D. Deferred Service Provider: if your service provider is only
+      registering binding in service container, you may choose to
+      defer(load provider only when used) until one of the registered
+      bindings is actually needed. Deferring the loading of such a provider
+      will improve the performance of your application, since it's not
+      loaded from the filesystem on every request
+      Laravel compiles and stores a list of all it's services supplied by
+      deferred service provider, along with the name of it's service
+      provider class. Then , only when you attempt to resolve one of
+      these services does laravel load the service provider
+      To defer the loading of a provider, implement this contract:
+      'Illuminate\Contracts\Support\DeferrableProvider' interface and
+      define a provides() method. The provides() method should return
+      the service container bindings registered by the service provider
+      You can change your service provider and make compiled services
+      change by:
+      1. artisan command: 'php artisan clear-compiled'
+      2. do some process stuff like running you application
+       : 'php artisan serve' like that

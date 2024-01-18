@@ -30,4 +30,15 @@ class ServiceProviderTest extends TestCase
         self::assertSame($interface, $interface2);
         self::assertEquals('hey anas', $interface->hello('anas'));
     }
+
+    /**
+     * run this to check our service load or not, but if you do this always
+     * call our service provider, because when unit test mode, all service
+     * provider will be loaded, you can test by echo in and load your
+     * application with 'php artisan serve'
+     */
+    public function testEmpty()
+    {
+        self::assertTrue(true);
+    }
 }
