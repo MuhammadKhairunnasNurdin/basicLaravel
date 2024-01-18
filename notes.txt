@@ -145,3 +145,105 @@ Notes for bind(key, closure), singleton(key, closure) , and instance(key,
     class, laravel with ServiceContainer will automatically search
     dependency class that available and pass the requirements for our
     dependent
+
+13. Dependency injection in closure: we can use method in Application class
+    that specifically in ServiceContainer by use $app instance inside
+    closure. This way can be used to pass $app in parameter like method
+    bind, instance, and singleton that we used before
+
+14. Binding interface on class: like I said before, u can use methods
+    existing in Application class from
+    Illuminate\Foundation\Application or
+    in Illuminate\Support\Facade if that method is available like
+    bind(interface, class), bind(interface, closure),
+    singleton(interface, class), and singleton(interface, closure)
+    , with closure function return implemented class(object or instance)
+    that extend interface
+
+15. Service container:
+    A. Zero Configuration Resolution: if a class has no dependencies or
+    only depends on other concrete classes(not interfaces), the container
+    doesn't need to be instructed on how to resolve that class like this:
+    <?php
+
+        class Service
+        {
+            // ...
+        }
+    ?>
+
+    <?php5
+        Route::get('/', function (Service $service) {
+            die($service::class);
+        });
+    ?>
+    this example in routes/web.php file(below). In this example dependency
+    injection is resolved by Route::get() function, and many classes will
+    be writing when building a laravel application automatically receive
+    their dependencies via container, including controllers, event
+    listeners, middleware and more.Additionally, you might type-hint the
+    dependencies in the handle method of queued jobs that make those task
+    faster in response.
+    Thanks to zero configuration resolution, you will often type-hint
+    dependencies on routes, controllers, event listeners, and elsewhere
+    without ever manually interacting with the container. For example, you
+    might type-hint the Illuminate\Http\Request object on your route
+    definition so that you can easily access the current request. Even
+    though we never have to interact with the container to write this
+    code, it is managing the injection of these dependencies behind the
+    scenes:
+
+        use Illuminate\Http\Request;
+
+        Route::get('/', function (Request $request) {
+            // ...
+        });
+
+    In many cases, thanks to automatic dependency injection and facades,
+    you can build Laravel applications without ever manually binding or
+    resolving anything from the container. So, when would you ever
+    manually interact with the container? Let's examine two situations.
+    First, if you write a class that implements an interface and you wish
+    to type-hint that interface on a route or class constructor, you must
+    tell the container how to resolve that interface. Secondly, if you are
+    writing a Laravel package that you plan to share with other Laravel
+    developers, you may need to bind your package's services into the
+    container.
+
+    B.other than Service containers that provide by
+     Illuminate\Foundation\Application you can use
+     Illuminate\Support\Facades\App
+     Facades in Laravel provide a “static” interface to classes that are
+     available in the application’s service container. They serve as
+     “static proxies” to underlying classes in the service container,
+     providing the benefit of a terse, expressive syntax while maintaining
+     more testability and flexibility than traditional static methods.
+     When you access a facade, Laravel will get the responsible object
+     from the service container and pass the data to this object
+
+    C.Service Providers: if service container is a place where your
+     service classes are registered, service provider is a central place
+     that bootstrapping all laravel applications and manage to register
+     all service class to service container and in laravel Service
+     Provider are places in App/Providers directory. Each Service provider
+     have default method register() and boot() functions. register()
+     function is responsible for registering you services(dependencies)
+     , notes: you haven't to add code to register() function other than
+     registering dependencies or else you will face not found dependencies.
+     boot() function is responsible other code that register services.
+     You can make Service Provider automatically with artisan command:
+     "php artisan make:provider NameServiceProvider"
+     When we make Service Provider, in default your service provider hadn't
+     load by laravel, so in order to make laravel know about your service
+     provider, you can add in config/app.php file, in there had key
+     provider that had class-class Service Provider run by laravel, you
+     can add in array key "providers" in application services block
+     The bindings and singletons Properties
+     If your service provider registers many simple bindings, you may wish
+     to use the bindings and singletons properties instead of manually
+     registering each
+     container binding. When the service provider is loaded by the
+     framework, it will automatically check for these properties and
+     register their bindings
+
+     D.

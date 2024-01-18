@@ -93,4 +93,50 @@ class ServiceContainerDependencyTest extends TestCase
          */
         self::assertSame($dependency, $dependent->dependency);
     }
+
+    public function testDependencyInjectionInClosure()
+    {
+        $this->app->singleton(Dependency::class, function () {
+            return new Dependency();
+        });
+
+        $dependent1 = $this->app->make(Dependent::class);
+        $dependent2 = $this->app->make(Dependent::class);
+
+        /**
+         * this example that our dependent object haven't same instance
+         */
+        self::assertNotSame($dependent1, $dependent2);
+
+        /**
+         * so in order to make dependent instance also use singleton()
+         * method, we can use singleton() but with closure accept $app
+         * instance from Application in Illuminate/Foundation/Application
+         * class as a parameter.
+         *
+         * In terms of when to use one over the other, it depends on your
+         * specific needs:
+         *
+         * If you’re building a Laravel application, you’ll mostly be
+         * interacting with the Illuminate\Foundation\Application class,
+         * as it provides the concrete implementation of the Laravel
+         * application.
+         *
+         * If you’re building a package that needs to interact with
+         * Laravel, but you want to keep your package decoupled from
+         * Laravel’s concrete implementations, you might choose to t
+         * ype-hint against the
+         * Illuminate\Contracts\Foundation\Application interface instead.
+         * This allows your package to remain flexible and potentially
+         * compatible with other PHP frameworks.
+         */
+        $this->app->singleton(Dependent::class, function ($app) {
+            return new Dependent($app->make(Dependency::class));
+        });
+
+        $dependent3 = $this->app->make(Dependent::class);
+        $dependent4 = $this->app->make(Dependent::class);
+
+        self::assertSame($dependent3, $dependent4);
+    }
 }
