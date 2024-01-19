@@ -2,7 +2,7 @@
 
 namespace App\TestFacades;
 
-class MainClass
+class OriginalClass
 {
     public function hey(): string
     {

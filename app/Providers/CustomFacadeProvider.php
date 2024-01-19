@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\TestFacades\MainClass;
+use App\TestFacades\OriginalClass;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 
@@ -13,8 +13,12 @@ class CustomFacadeProvider extends ServiceProvider implements DeferrableProvider
      */
     public function register(): void
     {
-        $this->app->bind('mainclass', function () {
-            return new MainClass();
+        /**
+         * if you want to make instance from OriginalClass always
+         * different, try with bind() method
+         */
+        $this->app->singleton('originalClass', function () {
+            return new OriginalClass();
         });
     }
 
@@ -28,6 +32,6 @@ class CustomFacadeProvider extends ServiceProvider implements DeferrableProvider
 
     public function provides(): array
     {
-        return ['mainclass'];
+        return ['originalClass'];
     }
 }

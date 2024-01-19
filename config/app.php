@@ -185,7 +185,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
-        'MainClass' => \App\TestFacades\FacadeExtensor\MainClass::class,
+        'AccessingOriginalClass' => App\TestFacades\FacadeExtensor\AccessingOriginalClass::class,
     ])->toArray(),
 
 ];

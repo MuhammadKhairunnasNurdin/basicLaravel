@@ -8,12 +8,12 @@ use Illuminate\Support\Facades\Facade;
  * @method static string hey()
  * @method static array bro()
  *
- * @see \App\TestFacades\MainClass
+ * @see \App\TestFacades\OriginalClass
  */
-class MainClass extends Facade
+class AccessingOriginalClass extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return 'mainclass';
+        return 'originalClass';
     }
 }
