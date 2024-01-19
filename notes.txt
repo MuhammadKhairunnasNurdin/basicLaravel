@@ -126,19 +126,19 @@
     limited in dependencies instance maker, but you can make all class
     instance that available in you laravel
 
-11. Singleton method: if before in Application class that instantiate in
-    $app variable and have function like bind(key, closure) that return
-    instance from our class, but instance always new, so laravel have
-    function that return same object even if you called make(key) function
-    again and again, this function is singleton(key, closure) function
+    A. Singleton method: if before in Application class that instantiate in
+     $app variable and have function like bind(key, closure) that return
+     instance from our class, but instance always new, so laravel have
+     function that return same object even if you called make(key) function
+     again and again, this function is singleton(key, closure) function
 
-12. instance method: if before in Application class that instantiate in
-    $app variable and have function like singleton(key, closure) return
-    instance from our class, but instance always same, different with that
-    instance(key, object) function haven't required closure, but you can
-    pass object in parameter. Functionality this function is same like
-    singleton(key, closure) function and when you call make(key) function
-    again and again, instance that returned is the same object
+    B.instance method: if before in Application class that instantiate in
+     $app variable and have function like singleton(key, closure) return
+     instance from our class, but instance always same, different with that
+     instance(key, object) function haven't required closure, but you can
+     pass object in parameter. Functionality this function is same like
+     singleton(key, closure) function and when you call make(key) function
+     again and again, instance that returned is the same object
 
 Notes for bind(key, closure), singleton(key, closure) , and instance(key,
     object) function: if you call make(key) function with key is dependent
@@ -146,21 +146,21 @@ Notes for bind(key, closure), singleton(key, closure) , and instance(key,
     dependency class that available and pass the requirements for our
     dependent
 
-13. Dependency injection in closure: we can use method in Application class
-    that specifically in ServiceContainer by use $app instance inside
-    closure. This way can be used to pass $app in parameter like method
-    bind, instance, and singleton that we used before
+    C.Dependency injection in closure: we can use method in Application
+    class that specifically in ServiceContainer by use $app instance
+    inside closure. This way can be used to pass $app in parameter like
+    method bind, instance, and singleton that we used before
 
-14. Binding interface on class: like I said before, u can use methods
-    existing in Application class from
-    Illuminate\Foundation\Application or
-    in Illuminate\Support\Facade if that method is available like
-    bind(interface, class), bind(interface, closure),
-    singleton(interface, class), and singleton(interface, closure)
-    , with closure function return implemented class(object or instance)
-    that extend interface
+    D.Binding interface on class: like I said before, u can use methods
+     existing in Application class from
+     Illuminate\Foundation\Application or
+     in Illuminate\Support\Facade if that method is available like
+     bind(interface, class), bind(interface, closure),
+     singleton(interface, class), and singleton(interface, closure)
+     , with closure function return implemented class(object or instance)
+     that extend interface
 
-15. Service container:
+11. Service container:
     A. Zero Configuration Resolution: if a class has no dependencies or
     only depends on other concrete classes(not interfaces), the container
     doesn't need to be instructed on how to resolve that class like this:
@@ -172,7 +172,7 @@ Notes for bind(key, closure), singleton(key, closure) , and instance(key,
         }
     ?>
 
-    <?php5
+    <?php
         Route::get('/', function (Service $service) {
             die($service::class);
         });
@@ -203,7 +203,7 @@ Notes for bind(key, closure), singleton(key, closure) , and instance(key,
     you can build Laravel applications without ever manually binding or
     resolving anything from the container. So, when would you ever
     manually interact with the container? Let's examine two situations.
-    First, if you write a class that implements an interface and you wish
+    First, if you write a class that implements an interface, and you wish
     to type-hint that interface on a route or class constructor, you must
     tell the container how to resolve that interface. Secondly, if you are
     writing a Laravel package that you plan to share with other Laravel
@@ -265,3 +265,230 @@ Notes for bind(key, closure), singleton(key, closure) , and instance(key,
       1. artisan command: 'php artisan clear-compiled'
       2. do some process stuff like running you application
        : 'php artisan serve' like that
+
+12. Facades: before when interact with features in laravel we use
+    dependency injection, but sometimes, there are cases when we haven't
+    retrieved application object like when we make class that isn't
+    laravel feature(
+        before we create class in test/Feature and Providers
+        folder which those folder is laravel feature, so we can use $app
+        or Application object, but what if we make class that hadn't
+        laravel feature?, in order to access that in static way you can
+        use facades
+    ),
+    so facades can be used. Facades provides static access
+    through features in service container or Application class and in
+    summary laravel facades provide access to almost all of laravel
+    features, All of Laravel's facades are defined in the
+    Illuminate\Support\Facades namespace. So, we can easily access a
+    facade, for example:
+
+    <?php
+        use Illuminate\Support\Facades\Cache;
+        use Illuminate\Support\Facades\Route;
+
+        Route::get('/cache', function () {
+          return Cache::get('key');
+        });
+    ?>
+
+    But you must use facades just when your needed, like when you can use
+    dependencies injection, always use dependencies injection, because use
+    to many facades will make your unconsciousness that your class had
+    much dependency to use, and you haven't known that and the primary
+    danger of facades is class "scope creep". Since facades are so easy to
+    use and do not require injection, it can be easy to let your classes
+    continue to grow and use many facades in a single class. Using
+    dependency injection, this potential is mitigated by the visual
+    feedback a large constructor gives you that your class is growing too
+    large. So, when using facades, pay special attention to the size of
+    your class so that its scope of responsibility stays narrow. If your
+    class is getting too large, consider splitting it into multiple
+    smaller classes, but if you make dependencies injection manually, you
+    can see how many parameters that we had to pass in constructor.
+
+    A. Facades vs. Dependency Injection
+     One of the primary benefits of dependency injection is the ability to
+     swap implementations of the injected class. This is useful during
+     testing since you can inject a mock or stub and assert that various
+     methods were called on the stub.
+     Typically, it would not be possible to mock or stub a truly static
+     class method. However, since facades use dynamic methods to proxy
+     method calls to objects resolved from the service container, we
+     actually can test facades just as we would test an injected class
+     instance. For example, given the following route:
+
+     <?php
+       use Illuminate\Support\Facades\Cache;
+
+       Route::get('/cache', function () {
+           return Cache::get('key');
+       });
+     ?>
+
+     Using Laravel's facade testing methods, we can write the following
+     test to verify that the Cache::get method was called with the
+     argument we expected:
+
+     <?php
+       use Illuminate\Support\Facades\Cache;
+
+       /**
+        * A basic functional test example.
+        */
+       public function test_basic_example(): void
+       {
+           Cache::shouldReceive('get')
+                ->with('key')
+                ->andReturn('value');
+
+           $response = $this->get('/cache');
+
+           $response->assertSee('value');
+       }
+     ?>
+
+    B.Facades vs. Helper Functions: in facades there is Helper function
+     this different with Helper functions that those functions not
+     collected in one class like facades. Before we use Helper functions
+     like config() or env(), this provide more easy to use
+     helper, but some function compare to facades, helper in facades is
+     more simple by code.You can mix helper function and facades, because
+     Helper functions are globally and became complement to facades,
+     Laravel offers a variety of global "helper functions" that make it
+     even easier to interact with common Laravel features. Some of the
+     common helper functions you may interact with are view, response,
+     url, config, and more.
+     Each helper function offered by Laravel is documented with
+     their corresponding feature; however, a complete list is available
+     within the dedicated helper documentation.
+     For example, instead of using the Illuminate\Support\Facades\Response
+     facade to generate a JSON response, we may simply use the response
+     function. Because helper functions are globally available, you do not
+     need to import any classes in order to use them:
+
+     instead using this:
+     <?php
+          use Illuminate\Support\Facades\Response;
+
+          Route::get('/users', function () {
+              return Response::json([
+                  // ...
+              ]);
+          });
+     ?>
+
+     you can use helper functions that global:
+      <?php
+          Route::get('/users', function () {
+              return response()->json([
+                  // ...
+              ]);
+          });
+      ?>
+
+      For example again, this facade call and helper call are equivalent:
+
+      Facade call:
+      return Illuminate\Support\Facades\View::make('profile');
+
+      Helper call:
+      return view('profile');
+
+      There is absolutely no practical difference between facades and
+      helper functions. When using helper functions, you may still test
+      them exactly as you would the corresponding facade. For example,
+      given the following route:
+
+      <?php
+          Route::get('/cache', function () {
+              return cache('key');
+          });
+      ?>
+
+      The cache helper is going to call the get method on the class
+      underlying the Cache facade. So, even though we are using the helper
+      function, we can write the following test to verify that the method
+      was called with the argument we expected:
+
+      <?php
+          use Illuminate\Support\Facades\Cache;
+
+          /**
+           * A basic functional test example.
+           */
+          public function test_basic_example(): void
+          {
+              Cache::shouldReceive('get')
+                   ->with('key')
+                   ->andReturn('value');
+
+              $response = $this->get('/cache');
+
+              $response->assertSee('value');
+          }
+      ?>
+
+      C. How facade works: in laravel applications, facades is a class that
+       provides access to objects dependency from the service container.
+       This machinery that makes this work is in the Facade class, also
+       many helper functions that called by facade or called in static way
+       also extend Facade class, so laravel facades and any custom facades
+       you create, will extend base 'Illuminate\Support\Facades\Facade'
+       In Facade class have a method __callStatic() that uses like magic
+       method or meta programming that will call method in dependency in
+       Service Container, although we call static method we pass in
+       static way like 'Route::get()', this will call get method in Route
+       dependency in service container
+       By glancing at this code, one might assume that the static get method is being called on the Cache class:
+
+       <?php
+
+           namespace App\Http\Controllers;
+
+           use App\Http\Controllers\Controller;
+           use Illuminate\Support\Facades\Cache;
+           use Illuminate\View\View;
+
+           class UserController extends Controller
+           {
+               /**
+                * Show the profile for the given user.
+                */
+               public function showProfile(string $id): View
+               {
+                   $user = Cache::get('user:'.$id);
+
+                   return view('profile', ['user' => $user]);
+               }
+           }
+       ?>
+
+       Notice that near the top of the file we are "importing" the Cache
+       facade. This facade serves as a proxy for accessing the underlying
+       implementation of the Illuminate\Contracts\Cache\Factory interface.
+       Any calls we make using the facade will be passed to the underlying
+       instance of Laravel's cache service.
+
+       If we look at that Illuminate\Support\Facades\Cache class, you'll
+       see that there is no static method get:
+
+       <?php
+           class Cache extends Facade
+           {
+               /**
+                * Get the registered name of the component.
+                */
+               protected static function getFacadeAccessor(): string
+               {
+                   return 'cache';
+               }
+           }
+       ?>
+
+       Instead, the Cache facade extends the base Facade class and defines
+       the method getFacadeAccessor(). This method's job is to return the
+       name of a service container binding. When a user references any
+       static method on the Cache facade, Laravel resolves the cache
+       binding from the service container and runs the requested method
+       (in this case, get) against that object.
