@@ -13,4 +13,9 @@ class OriginalClass
     {
         return ['hey', 'anas'];
     }
+
+    public function paramTest(string $arg): string
+    {
+        return "param: $arg";
+    }
 }

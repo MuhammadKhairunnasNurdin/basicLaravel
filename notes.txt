@@ -492,3 +492,45 @@ Notes for bind(key, closure), singleton(key, closure) , and instance(key,
        static method on the Cache facade, Laravel resolves the cache
        binding from the service container and runs the requested method
        (in this case, get) against that object.
+
+       D. Make Custom Facades: in order to make custom facades:
+        1. you can create your original class in app folder(
+            you can create that inside folder
+        )
+        2. make class for accessing those original class, this class
+         must extend Facade class from 'Illuminate\Support\Facades\Facade'
+         and add method getFacadeAccessor() and return camelCase your
+         original class name
+        3. make Service Providers that in register() method you have to
+         registered with bind(), singleton() method with abstract
+         parameter is class name that return in getFacadeAccessor()
+         method and concrete parameter is instance from original class.
+         If you have to make Your Service Provider for facades became
+         deferred, you can implement DeferrableProvider contract
+        4. register your Service Provider with add in app.config file part
+         'providers' array key with value your service provider like:
+         'App\Providers\CustomProvider::class'
+        5. adding static methods finder in class that accessing original
+         class that extend Facade class like:
+         /**
+          * @method static string hey()
+          * @method static array bro()
+          *
+          * @see \App\TestFacades\OriginalClass
+          */
+          you can see, string is return type your function, and hey() is
+          name your function that in original class
+         6.you can create aliases in app.config file part 'aliases' array
+          key with value like: 'nameAlias =>
+          App\PathToAccessorFacade::class', but this I can't understand
+          how it works; that works, but PHP Storm can't detect our
+          aliases, this new problem
+         7. last don't forget to refresh your compiled class by artisan
+          command: 'php artisan clear-compiled' and do some stuff like
+          'php artisan serve' to re-register you boostrap cache
+
+        E. Facades Mock: some lack with static functions is difficult to
+         do testing, but laravel provides functions that do mocking test
+         in facades, so we can easily implement feature testing or unit
+         testing, because laravel use Mockery Library for Mocking in
+         Facades
