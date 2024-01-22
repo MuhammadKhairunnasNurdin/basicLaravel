@@ -636,3 +636,66 @@ Notes for bind(key, closure), singleton(key, closure) , and instance(key,
      }
      this test format, will return false if your param in assertSeeText()
      is not correct with actual value
+
+
+14. Static assets bundling: In laravel 10 and 11, bundling assets is
+    processed by Vite bundle in Node, when referencing asset in your JS or
+    CSS, Vite automatically processes and versions them, also Vite
+    processes static assets that you reference solely in Blade templates
+
+    A.Configuring Vite:
+    Vite is configured via a vite.config.js file in the root of your
+    project. You are free to customize this file based on your needs, and
+    you may also install any other plugins your application requires, such
+    as @vitejs/plugin-vue or @vitejs/plugin-react.
+    The Laravel Vite plugin requires you to specify the entry points for
+    your application. These may be JavaScript or CSS files, and include
+    preprocessed languages such as TypeScript, JSX, TSX, and Sass.
+    This default Vite configuration:
+
+        import { defineConfig } from 'vite';
+        import laravel from 'laravel-vite-plugin';
+
+        export default defineConfig({
+            plugins: [
+                laravel([
+                    'resources/css/app.css',
+                    'resources/js/app.js',
+                ]),
+            ],
+        });
+    If you are building an SPA, including applications built using
+    Inertia, Vite works best without CSS entry points:
+
+        import { defineConfig } from 'vite';
+        import laravel from 'laravel-vite-plugin';
+
+        export default defineConfig({
+            plugins: [
+                laravel([
+                    'resources/css/app.css',
+                    'resources/js/app.js',
+                ]),
+            ],
+        });
+    Instead, you should import your CSS via JavaScript. Typically, this
+    would be done in your application's resources/js/app.js file:
+
+        import './bootstrap';
+        import '../css/app.css';
+
+    B. Loading your script and styles with Vite to blade:
+    With your Vite entry points configured, you may now reference them in
+    a @vite() Blade directive that you add to the <head> of your
+    application's root template:
+
+        <!doctype html>
+        <head>
+            {{-- ... --}}
+
+            @vite(['resources/css/app.css', 'resources/js/app.js'])
+        </head>
+    you can type: 'npm run build' to make your assets building in public
+    folder
+    For other explanation about Vite bundling packages js, css, sass,
+    tailwind, etc. we hadn't explained in basic
