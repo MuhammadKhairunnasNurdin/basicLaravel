@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\View;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,3 +36,27 @@ Route::redirect('/testRedirect', '/testRoute');
 Route::fallback(function () {
     return '404 custom page';
 });
+
+/**
+ * Route for view with single line
+ */
+Route::view('/urlName', 'bladeTest', ['name' => 'BLADE']);
+
+/**
+ * Route for view with closure
+ */
+Route::get('/urlName2', function () {
+    return view('bladeTest', ['name' => 'BLADE2']);
+});
+
+/**
+ * Route with Facade function
+ */
+Route::get('/urlName3', function () {
+    return View::make('bladeTest', ['name' => 'BLADE3']);
+});
+
+/**
+ * Route for nested view
+ */
+Route::view('/nestedView', 'nestedFolder.nestedView', ['name' => 'anas']);
