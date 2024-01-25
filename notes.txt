@@ -567,7 +567,7 @@ Notes for bind(key, closure), singleton(key, closure) , and instance(key,
             {
                 $this->get('/nameUrl')
                     ->assertStatus(200)
-                    ->assertSeeText('you return text');
+                    ->assertContent('you return text');
             }
         }
     ?>
@@ -584,9 +584,10 @@ Notes for bind(key, closure), singleton(key, closure) , and instance(key,
    change the page 404 to custom page for this, you can do function:
    'Route::fallback($closure)'
 
-   E. Route Parameters: sometimes you will need to capture segments of the
-    url within your route.For example, you may need to capture a user's ID
-    from the URL. You may do so by defining route parameters:
+   E. Route Parameters:
+    A.Required Parameters: sometimes you will need to capture segments of
+    the url within your route.For example, you may need to capture a
+    user's ID from the URL. You may do so by defining route parameters:
 
         Route::get('/user/{id}', function (string $id) {
           return 'User '.$id;
@@ -598,7 +599,6 @@ Notes for bind(key, closure), singleton(key, closure) , and instance(key,
         $postId, string $commentId) {
           // ...
         });
-
     like above example, laravel supports route parameters, so we can
     automatically retrieve data in closure function or in array, but in
     order to retrieve data parameters, Route Parameters are always encased
@@ -607,6 +607,170 @@ Notes for bind(key, closure), singleton(key, closure) , and instance(key,
     parameters are injected into route callbacks / controllers based on
     their order-the names of the route callback / controller arguments
     do not matter
+
+    B. Optional Parameters
+    Occasionally you may need to specify a route parameter that may not
+    always be present in the URI. You may do so by placing a ? mark after
+    the parameter name. Make sure to give the route's corresponding
+    variable a default value:
+
+        Route::get('/user/{name?}', function (?string $name = null) {
+            return $name;
+        });
+
+        Route::get('/user/{name?}', function (?string $name = 'John') {
+            return $name;
+        });
+
+    C.Regular Expression Constraint:
+    You may constrain the format of your route parameters using the where
+    method on a route instance. The where() method accepts the name of the
+    parameter and a regular expression defining how the parameter should
+    be constrained:
+
+        Route::get('/user/{name}', function (string $name) {
+            // ...
+        })->where('name', '[A-Za-z]+');
+
+        Route::get('/user/{id}', function (string $id) {
+            // ...
+        })->where('id', '[0-9]+');
+
+        Route::get('/user/{id}/{name}', function (string $id, string $name) {
+            // ...
+        })->where(['id' => '[0-9]+', 'name' => '[a-z]+']);
+
+    For convenience, some commonly used regular expression patterns have
+    helper methods that allow you to quickly add pattern constraints to
+    your routes:
+        //this for regex manual: '[0-9]+'
+        Route::get('/user/{id}/{name}', function (string $id, string $name) {
+            // ...
+        })->whereNumber('id')->whereAlpha('name');
+
+        //this for regex manual: '[a-zA-Z]+'
+        Route::get('/user/{name}', function (string $name) {
+            // ...
+        })->whereAlpha('name');
+
+        //this for regex manual: '[a-zA-Z0-9]+'
+        Route::get('/user/{name}', function (string $name) {
+            // ...
+        })->whereAlphaNumeric('name');
+
+        Route::get('/user/{id}', function (string $id) {
+            // ...
+        })->whereUuid('id');
+
+        Route::get('/user/{id}', function (string $id) {
+            //
+        })->whereUlid('id');
+
+        //this for regex that matches values in an array
+        Route::get('/category/{category}', function (string $category) {
+            // ...
+        })->whereIn('category', ['movie', 'song', 'painting']);
+
+    If the incoming request does not match the route pattern constraints,
+    a 404 HTTP response will be returned, or you can custom by create
+    fallback function for your route.
+
+    D.Globals Constraint: If you would like a route parameter to always
+     be constrained by a given regular expression, you may use the pattern
+     method. You should define these patterns in the boot method of your
+     App\Providers\RouteServiceProvider class:
+
+        /**
+        * Define your route model bindings, pattern filters, etc.
+        */
+        public function boot(): void
+        {
+          Route::pattern('id', '[0-9]+');
+        }
+
+        Once the pattern has been defined, it is automatically applied to
+        all routes using that parameter name:
+
+        Route::get('/user/{id}', function (string $id) {
+          // Only executed if {id} is numeric...
+        });
+
+    E.Encoded Forward Slashes
+    The Laravel routing component allows all characters except / to be
+    present within route parameter values. You must explicitly allow /
+    to be part of your placeholder using a where condition regular
+    expression:
+
+    Route::get('/search/{search}', function (string $search) {
+      return $search;
+    })->where('search', '.*');
+
+    Warning:
+    Encoded forward slashes are only supported within the last route
+    segment.
+
+    F. Routing Conflict: in laravel if your route is conflict with another
+    route, this will haven't caused error, but laravel will prioritize
+    route that first that make or route that above compare to conflicted
+    routes
+
+    G.Named Route: in laravel we can be naming route allow convenient
+    generation of URLs of redirects for specific routes. You may specify
+    a name for a route by chaining the name() method onto the route
+    definition:
+        Route::get('/user/profile', function () {
+            // ...
+        })->name('profile');
+
+        You may also specify route names for controller actions:
+
+        Route::get(
+            '/user/profile',
+            [UserProfileController::class, 'show']
+        )->name('profile');
+
+    Warning:
+    Route names should always be unique.
+
+    Generating URLs to Named Routes
+    Once you have assigned a name to a given route, you may use the
+    route's name when generating URLs or redirects via Laravel's route
+    and redirect helper functions:
+
+        // Generating URLs...
+        $url = route('profile');
+
+        // Generating Redirects...
+        return redirect()->route('profile');
+
+        return to_route('profile');
+
+    If the named route defines parameters, you may pass the parameters as
+    the second argument to the route function. The given parameters will
+    automatically be inserted into the generated URL in their correct
+    positions:
+
+        Route::get('/user/{id}/profile', function (string $id) {
+            // ...
+        })->name('profile');
+
+        $url = route('profile', ['id' => 1]);
+
+    If you pass additional parameters in the array, those key / value
+    pairs will automatically be added to the generated URL's query string:
+
+        Route::get('/user/{id}/profile', function (string $id) {
+            // ...
+        })->name('profile');
+
+        $url = route('profile', ['id' => 1, 'photos' => 'yes']);
+
+        // /user/1/profile?photos=yes
+
+    Sometimes, you may wish to specify request-wide default values for
+    URL parameters, such as the current locale. To accomplish this, you
+    may use the URL::defaults method.
+
 
 14. View: in order to create response in HTML and more complex appearance,
     you can add view in resources/views folder. This to separate the logic

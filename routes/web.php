@@ -62,6 +62,72 @@ Route::get('/urlName3', function () {
  */
 Route::view('/nestedView', 'nestedFolder.nestedView', ['name' => 'anas']);
 
+/**
+ * Route for Inertia Svelte
+ */
 Route::get('/testSvelte', function () {
     return Inertia::render('Test');
+});
+
+/**
+ * Route for Required parameters
+ */
+Route::get('/param1/{arg}/param2/{arg2}', function (string $arg, int $arg2) {
+    return "param 1: $arg, param 2: $arg2";
+});
+
+/**
+ * Route for Optional parameters
+ */
+Route::get('/required/{arg}/optional/{arg2?}', function ($arg, ?string $arg2 = 'default') {
+    return "Required param: $arg, Optional param: $arg2";
+});
+
+/**
+ * Route for Regex manual
+ */
+Route::get('/testRegex/{arg}', function ($arg) {
+    return "Test regex: $arg";
+})->where('arg', '[0-9]+');
+
+/**
+ * Route for Regex with helper function
+ */
+Route::get('/testRegex2/{arg}', function ($arg) {
+    return "Test regex: $arg";
+})->whereNumber('arg');
+
+/**
+ * Route for Global constraint regex. In this case Just Alphabetical
+ */
+Route::get('/globalRegex/{globalRegexTest}', function ($globalRegexTest) {
+    // Only executed if {globalRegexTest} is alphabetic...
+    return "Global regex: $globalRegexTest";
+});
+
+/**
+ * Route for Conflict test
+ *
+ * if name = 'anas', First route that will be executed
+ */
+Route::get('/conflict/anas', function () {
+    return 'Second conflict';
+});
+Route::get('/conflict/{name}', function ($name) {
+    return "First conflict: $name";
+});
+
+/**
+ * Route for named routing
+ */
+Route::get('/namedRoute/{id?}', function (?int $id = null) {
+    return 'Id: '.$id;
+})->name('named.route');
+Route::get('/UrlsTest/{data}', function ($data) {
+    $ulr = route('named.route');
+
+    return 'From UrlsTest: '.$data.' ;retrieved data: '.$ulr;
+})->name('named.route.UrlsTest');
+Route::get('/namedRedirect/{data}', function ($data) {
+    return to_route('named.route', ['id' => $data]);
 });
