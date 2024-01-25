@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
+use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,3 +61,7 @@ Route::get('/urlName3', function () {
  * Route for nested view
  */
 Route::view('/nestedView', 'nestedFolder.nestedView', ['name' => 'anas']);
+
+Route::get('/testSvelte', function () {
+    return Inertia::render('Test');
+});
