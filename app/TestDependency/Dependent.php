@@ -15,4 +15,9 @@ class Dependent
     {
         return $this->dependency->test().' and dependent';
     }
+
+    public function tryDependentDependency($arg): string
+    {
+        return $this->dependency->test().' and dependent: '.$arg;
+    }
 }

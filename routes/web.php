@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\DependentDependencyController;
+use App\Http\Controllers\SingleActionController;
+use App\Http\Controllers\TryBasicController;
+use App\Http\Controllers\TryDependencyInjectionController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Inertia\Inertia;
@@ -131,3 +135,27 @@ Route::get('/UrlsTest/{data}', function ($data) {
 Route::get('/namedRedirect/{data}', function ($data) {
     return to_route('named.route', ['id' => $data]);
 });
+
+/**
+ * Route for basic controller
+ */
+Route::get('/testController', [TryBasicController::class, 'index']);
+
+/**
+ * Route for test Dependency Injection for controller
+ */
+Route::get('/dependencyController', [TryDependencyInjectionController::class, 'dependencyInjection']);
+
+/**
+ * Route for instance that dependent in other dependency
+ *
+ * Here also example how parameter processed by controller,
+ *
+ * as you can see, you just need to make param in {} like usually
+ */
+Route::get('/dependentController/{arg}', [DependentDependencyController::class, 'getDependentFunc']);
+
+/**
+ * Route for Single Action Controller
+ */
+Route::get('/singleActionController/{param}', SingleActionController::class);

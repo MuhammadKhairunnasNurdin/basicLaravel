@@ -771,8 +771,130 @@ Notes for bind(key, closure), singleton(key, closure) , and instance(key,
     URL parameters, such as the current locale. To accomplish this, you
     may use the URL::defaults method.
 
+14. Controller: instead of defining all of your request handling logic as
+    closure in route web.php files, you may wish to organize this
+    behavior using 'controller' classes. Controller can group related
+    request handling logic into a single class. For example a
+    UserController class might handle all incoming request related to
+    user model.By default, controllers are stored in the
+    app/Http/Controllers directory.
 
-14. View: in order to create response in HTML and more complex appearance,
+    A.Basic Controllers
+      To quickly generate a new controller, you may run the
+      make:controller Artisan command. By default, all the controllers
+      for your application are stored in the app/Http/Controllers
+      directory:
+
+      "php artisan make:controller UserController"
+
+      Let's take a look at an example of a basic controller. A controller
+      may have any number of public methods which will respond to
+      incoming HTTP requests:
+
+          <?php
+
+          namespace App\Http\Controllers;
+
+          use App\Models\User;
+          use Illuminate\View\View;
+
+          class UserController extends Controller
+          {
+              /**
+               * Show the profile for a given user.
+               */
+              public function show(string $id): View
+              {
+                  return view('user.profile', [
+                      'user' => User::findOrFail($id)
+                  ]);
+              }
+          }
+
+      Once you have written a controller class and method, you may define
+      a route to the controller method like so:
+
+          use App\Http\Controllers\UserController;
+
+          Route::get('/user/{id}', [UserController::class, 'show']);
+
+      When an incoming request matches the specified route URI, the show
+      method on the App\Http\Controllers\UserController class will be
+      invoked and the route parameters will be passed to the method.
+
+      Notes:
+      Controllers are not required to extend a base class. However, you
+      will not have access to convenient features such as the middleware
+      and authorize methods.
+
+   B. Single Action controllers: If a controller action is particularly
+      complex, you might find it convenient to dedicate an entire
+      controller class to that single action. To accomplish this, you may
+      define a single __invoke method within the controller:
+
+         <?php
+
+         namespace App\Http\Controllers;
+
+         class ProvisionServer extends Controller
+         {
+             /**
+              * Provision a new web server.
+              */
+             public function __invoke()
+             {
+                 // ...
+             }
+         }
+     When registering routes for single action controllers, you do not
+     need to specify a controller method. Instead, you may simply pass
+     the name of the controller to the router:
+
+         use App\Http\Controllers\ProvisionServer;
+
+         Route::post('/server', ProvisionServer::class);
+     You may generate an invokable controller by using the --invokable
+     option of the make:controller Artisan command:
+
+     "php artisan make:controller ProvisionServer --invokable"
+
+     Notes:
+     Controller stubs may be customized using stub publishing.
+
+   C. Dependency Injection in Controller: In service container is used to
+    resolve all laravel controllers  As a result, you are able to
+    type-hint any dependencies your controller may need in its
+    constructor. The declared dependencies will automatically be resolved
+    and injected into the controller instance, but before you must
+    register your service provider in service container.
+    here code in App/Http/Controller/:
+
+        <?php
+
+        namespace App\Http\Controllers;
+
+        use App\Repositories\UserRepository;
+
+        class UserController extends Controller
+        {
+            /**
+             * Create a new controller instance.
+             */
+            public function __construct(
+                protected UserRepository $users,
+            ) {
+            }
+
+            public function index() {
+                return $this->$users->test();
+            }
+        }
+
+    Here code in routes web.php:
+        Route::get('/userController', [UserController::class, 'index']);
+
+
+15. View: in order to create response in HTML and more complex appearance,
     you can add view in resources/views folder. This to separate the logic
     of application and code for appearance, so View feature came in
     laravel to provide a convenient way to place all of our HTML in
@@ -828,7 +950,7 @@ Notes for bind(key, closure), singleton(key, closure) , and instance(key,
      is not correct with actual value
 
 
-14. Static assets bundling: In laravel 10 and 11, bundling assets is
+16. Static assets bundling: In laravel 10 and 11, bundling assets is
     processed by Vite bundle in Node, when referencing asset in your JS or
     CSS, Vite automatically processes and versions them, also Vite
     processes static assets that you reference solely in Blade templates
