@@ -1053,7 +1053,8 @@ Notes for bind(key, closure), singleton(key, closure) , and instance(key,
             // ...
         });
 
-     B. Request Path: instance($request) request From Request $request can be used to retrieve current path, like:
+     B. Request Method: instance($request) request From Request $request
+        can be used to retrieve current path, like:
         1. $request->path(): If Url like: Http://example.com/foo/bar will
             return foo/bar
         2. $request->url(): return all Url without query parameter
@@ -1061,3 +1062,10 @@ Notes for bind(key, closure), singleton(key, closure) , and instance(key,
         4. $request->method(): to retrieve current Http verb
         5. $request->isMethod('Http verb'): return true or false compare
             http verb in param
+        6. $request->host(): return host like 'localhost'
+        7. $request->httpHost(): return host with port like 'localhost:81'
+        7. $request->schemeHttpHost(): return full host with port like
+           'http://localhost:81'
+        notes: for request method that for receive host, will return only
+          corresponding host not with other added in url like controller,
+          method, also params

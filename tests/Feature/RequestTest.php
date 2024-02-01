@@ -47,4 +47,28 @@ class RequestTest extends TestCase
         $this->get('/checkHeader', ['X-Whatever' => 'this value'])
             ->assertContent('this value');
     }
+
+    public function testHostRequest()
+    {
+        $this->get('/checkHost')
+            ->assertContent('localhost');
+
+        /**
+         * unlike method host() in Request, httpHost() method return host with port
+         */
+        $this->get('/checkHttpHost')
+            ->assertContent('localhost:81');
+
+        /**
+         * unlike method host() in Request, schemeHttpHost() method return full host like
+         *
+         * http://localhost with port
+         *
+         * and became http://localhost:81
+         */
+        $this->get('/checkSchemeHttpHost')
+            ->assertContent('http://localhost:81');
+        $this->get('/checkSchemeHttpHost/added')
+            ->assertContent('http://localhost:81');
+    }
 }

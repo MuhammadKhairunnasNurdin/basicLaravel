@@ -41,4 +41,19 @@ class TryRequestController extends Controller
 
         return $request->header('X-Header-Name');
     }
+
+    public function checkHost(Request $request): string
+    {
+        return $request->host();
+    }
+
+    public function checkHttpHost(Request $request): string
+    {
+        return $request->httpHost();
+    }
+
+    public function checkSchemeAndHttpHost(Request $request): string
+    {
+        return $request->schemeAndHttpHost();
+    }
 }

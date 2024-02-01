@@ -181,6 +181,22 @@ Route::get('/checkHttpVerb1', [TryRequestController::class, 'checkHttpVerb']);
 Route::post('/checkHttpVerb2', [TryRequestController::class, 'checkHttpVerb']);
 
 /**
- * Route for Header test
+ * Route for Header Request Method
  */
 Route::get('/checkHeader', [TryRequestController::class, 'testHeader']);
+
+/**
+ * Route for host Request Method
+ */
+Route::get('/checkHost', [TryRequestController::class, 'checkHost']);
+
+/**
+ * Route for httpHost Request Method
+ */
+Route::get('/checkHttpHost', [TryRequestController::class, 'checkHttpHost']);
+
+/**
+ * Route for schemeHttpHost Request Method
+ */
+Route::get('/checkSchemeHttpHost', [TryRequestController::class, 'checkSchemeAndHttpHost']);
+Route::get('/checkSchemeHttpHost/added', [TryRequestController::class, 'checkSchemeAndHttpHost']);
