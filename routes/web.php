@@ -4,6 +4,7 @@ use App\Http\Controllers\DependentDependencyController;
 use App\Http\Controllers\SingleActionController;
 use App\Http\Controllers\TryBasicController;
 use App\Http\Controllers\TryDependencyInjectionController;
+use App\Http\Controllers\TryRequestController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Inertia\Inertia;
@@ -159,3 +160,27 @@ Route::get('/dependentController/{arg}', [DependentDependencyController::class, 
  * Route for Single Action Controller
  */
 Route::get('/singleActionController/{param}', SingleActionController::class);
+
+/**
+ * Route for Path() Request method
+ */
+Route::get('/requestPath', [TryRequestController::class, 'requestPath']);
+
+/**
+ * Route for url() Request method
+ */
+Route::get('/requestUrl/{arg}', [TryRequestController::class, 'requestUrlWithoutQueryString']);
+
+/**
+ * Route for fullUrl() Request method
+ */
+Route::get('/requestFullUrl/{param}', [TryRequestController::class, 'requestUrlWithQueryString']);
+
+/**Route for Check Http verb*/
+Route::get('/checkHttpVerb1', [TryRequestController::class, 'checkHttpVerb']);
+Route::post('/checkHttpVerb2', [TryRequestController::class, 'checkHttpVerb']);
+
+/**
+ * Route for Header test
+ */
+Route::get('/checkHeader', [TryRequestController::class, 'testHeader']);

@@ -1011,3 +1011,53 @@ Notes for bind(key, closure), singleton(key, closure) , and instance(key,
     folder
     For other explanation about Vite bundling packages js, css, sass,
     tailwind, etc. we hadn't explained in basic
+
+17. Http Request: Request in native php is like global variables $_GET,
+    $_POST, etc. that relate to request from web. In laravel Request
+    processed in Illuminate\Http\Request class, this class provides an
+    object-oriented way to interact with the current HTTP request being
+    handled by your application as well as retrieve input, cookies, and
+    files that were submitted with request
+
+    A. Interact with the Request: To obtain an instance of the current Http request in your url via dependency injection, you should type-hint the Illuminate\Http\Request class on your route closure or
+     controller method, and like controller service container will handle
+     automatic injection
+     Here Request via Controller but not in Routes
+     (so in Routes haven't required made Request instance):
+        <?php
+
+        namespace App\Http\Controllers;
+
+        use Illuminate\Http\RedirectResponse;
+        use Illuminate\Http\Request;
+
+        class UserController extends Controller
+        {
+            /**
+             * Store a new user.
+             */
+            public function store(Request $request): RedirectResponse
+            {
+                $name = $request->input('name');
+
+                // Store the user...
+
+                return redirect('/users');
+            }
+        }
+
+     And here Request just in Routes Closure:
+        use Illuminate\Http\Request;
+
+        Route::get('/', function (Request $request) {
+            // ...
+        });
+
+     B. Request Path: instance($request) request From Request $request can be used to retrieve current path, like:
+        1. $request->path(): If Url like: Http://example.com/foo/bar will
+            return foo/bar
+        2. $request->url(): return all Url without query parameter
+        3. $request->fullUrl(): return All Url with query parameter
+        4. $request->method(): to retrieve current Http verb
+        5. $request->isMethod('Http verb'): return true or false compare
+            http verb in param
