@@ -1069,3 +1069,30 @@ Notes for bind(key, closure), singleton(key, closure) , and instance(key,
         notes: for request method that for receive host, will return only
           corresponding host not with other added in url like controller,
           method, also params
+
+     C. Request input: for retrieve input form user, whatever the source
+        is form, or query parameter, in Request class there is method
+        that can be used specific depending on situations, here method:
+        1.$request->all(): retrieve all of the incoming request's input
+        data as an array, whatever the incoming request is from and HTML
+        form or is an XHR request( or XMLHttpRequest:
+            objects are used to interact with servers. You can retrieve
+            data from a URL without having to do a full page refresh
+        )
+        2.$request->collect(): retrieved input will be part of Collection
+        .Like other collection, there are many of methods to process your
+         collection like avg(), median(), concat(), macro(), etc.
+        3.$request->input(key, default): To access all the user input
+        from your Illuminate\Http\Request => Request class instance
+        without worrying about which Http verb was used for the
+        request.Regardless of the HTTP verb, the input() may be used
+        like:
+            a. retrieved input variable: input('nameVar')
+            b. retrieved input variable with default value if isn't exist
+               that variable: input('nameVar', 'default value')
+            c. retrieved input with array associative: input('key1.key2')
+               or you can like this: input('key1.*.key3'), this will take
+               all key subset from array key 'key1'
+            d.retrieved all the input values with as an array associative
+                : input()
+            e.retrieved only query parameters: query(key, default)

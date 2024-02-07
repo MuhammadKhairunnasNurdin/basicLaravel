@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DependentDependencyController;
+use App\Http\Controllers\RequestInputController;
 use App\Http\Controllers\SingleActionController;
 use App\Http\Controllers\TryBasicController;
 use App\Http\Controllers\TryDependencyInjectionController;
@@ -200,3 +201,38 @@ Route::get('/checkHttpHost', [TryRequestController::class, 'checkHttpHost']);
  */
 Route::get('/checkSchemeHttpHost', [TryRequestController::class, 'checkSchemeAndHttpHost']);
 Route::get('/checkSchemeHttpHost/added', [TryRequestController::class, 'checkSchemeAndHttpHost']);
+
+/**
+ * Route for Request input all()
+ */
+Route::any('/testAllInput', [RequestInputController::class, 'tryAll']);
+
+/**
+ * Route for Request input collect()
+ */
+Route::any('/testCollectInput', [RequestInputController::class, 'tryCollect']);
+
+/**
+ * Route for Request input(key, default) method
+ */
+Route::any('/testInput', [RequestInputController::class, 'tryInput']);
+
+/**
+ * Route for Request input() method with no arguments
+ */
+Route::any('/testInputNoArg', [RequestInputController::class, 'tryInputNoArg']);
+
+/**
+ * Route for Request input() method for array associative
+ */
+Route::any('/testInputArray', [RequestInputController::class, 'tryInputArray']);
+
+/**
+ * Route for input() no arg and return Json Encode
+ */
+Route::post('/testInputJsonEncode', [RequestInputController::class, 'tryInputJsonEncode']);
+
+/**
+ * Route for query(). This only accept query param
+ */
+Route::get('/testInputQueryParam', [RequestInputController::class, 'tryInputQueryParam']);
