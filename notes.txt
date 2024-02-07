@@ -1097,4 +1097,4 @@ Notes for bind(key, closure), singleton(key, closure) , and instance(key,
                 : input()
             e.retrieved only query parameters: query(key, default)
 
-        4.Input type:
+        4.Input type: is
