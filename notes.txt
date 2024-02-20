@@ -548,6 +548,7 @@ Notes for bind(key, closure), singleton(key, closure) , and instance(key,
         });
      >?
 
+
    B. Static method Route: you can adapt specific HTTP Verb like this:
     Route::get($url, $callback)     : For retrieving data + param
     Route::post($url, $callback)    : For sending data
