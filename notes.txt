@@ -1097,5 +1097,3 @@ Notes for bind(key, closure), singleton(key, closure) , and instance(key,
             d.retrieved all the input values with as an array associative
                 : input()
             e.retrieved only query parameters: query(key, default)
-
-        4.Input type: is
