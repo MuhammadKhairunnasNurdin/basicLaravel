@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DependentDependencyController;
+use App\Http\Controllers\IdeHelperTestController;
 use App\Http\Controllers\RequestInputController;
 use App\Http\Controllers\SingleActionController;
 use App\Http\Controllers\TryBasicController;
@@ -236,3 +237,19 @@ Route::post('/testInputJsonEncode', [RequestInputController::class, 'tryInputJso
  * Route for query(). This only accept query param
  */
 Route::get('/testInputQueryParam', [RequestInputController::class, 'tryInputQueryParam']);
+
+/**
+ * Route for test Stringable instance
+ */
+Route::post('/testStringable', [RequestInputController::class, 'tryStringable']);
+
+/**
+ * Route for automatic convert Boolean
+ */
+Route::post('/testBooleanInput', [RequestInputController::class, 'tryBooleanInput']);
+
+Route::post('/testDateInput', [RequestInputController::class, 'tryDateInput']);
+
+Route::post('/testDynamicInput', [RequestInputController::class, 'tryDynamicInput']);
+
+Route::any('/TestIdeHelper', [IdeHelperTestController::class, 'index']);
