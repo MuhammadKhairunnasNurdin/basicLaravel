@@ -1098,4 +1098,15 @@ Notes for bind(key, closure), singleton(key, closure) , and instance(key,
                 : input()
             e.retrieved only query parameters: query(key, default)
 
-        4.Input type: is
+        4.Input type: in laravel there are ways to convert retrieved input
+        in automatic way such as:
+            a. $request->string('nameVar'): instead retrieving input as
+                a primitive string, make input as an instance of
+                Illuminate\Support\Stringable. As an instance, you can use
+                method in that class. You may notice that native php has
+                method like lcfirst() too, but there is advantage such
+                chaining methods like:
+                $request->string(key, default)->lcfirst()->snake();
+                This code provides more flexibility in chaining methods
+                that in native php like:
+                lcfirst(snake('you string value'));
